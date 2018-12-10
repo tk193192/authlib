@@ -66,11 +66,12 @@ class AuthorizationServer(object):
     def send_signal(self, name, *args, **kwargs):
         raise NotImplementedError()
 
-    def create_oauth2_request(self, request):
+    def create_oauth2_request(self, request, json=False):
         """This method MUST be implemented in framework integrations. It is
         used to create an OAuth2Request instance.
 
         :param request: the "request" instance in framework
+        :param json: parsing request payload with JSON format
         :return: OAuth2Request instance
         """
         raise NotImplementedError()
@@ -141,8 +142,12 @@ class AuthorizationServer(object):
         if name not in self._endpoints:
             raise RuntimeError('There is no "{}" endpoint.'.format(name))
 
-        request = self.create_oauth2_request(request)
         endpoint_cls = self._endpoints[name]
+
+        ct = getattr(endpoint_cls, 'REQUEST_CONTENT_TYPE', '')
+        is_json = ct == 'application/json'
+        request = self.create_oauth2_request(request, is_json)
+
         endpoint = endpoint_cls(request, self)
         return self.handle_response(*endpoint())
 

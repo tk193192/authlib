@@ -24,5 +24,10 @@ script: tox
 after_success:
   - TOXENV=codecov tox
 
+branches:
+  only:
+    - master
+    - /^\d\.\d+$/
+
 notifications:
   email: false

@@ -95,8 +95,8 @@ class AuthorizationServer(_AuthorizationServer):
         self.config.setdefault('jwt_alg', jwt_alg)
         self.config.setdefault('jwt_exp', jwt_exp)
 
-    def create_oauth2_request(self, request):
-        return create_oauth_request(request, OAuth2Request)
+    def create_oauth2_request(self, request, json=False):
+        return create_oauth_request(request, OAuth2Request, json)
 
     def handle_response(self, status_code, payload, headers):
         if isinstance(payload, dict):
